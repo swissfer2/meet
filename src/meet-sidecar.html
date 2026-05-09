@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Google Meet AI Sidecar</title>
+    <link rel="stylesheet" href="/meet-sidecar.css">
+  </head>
+  <body>
+    <main class="broadcast-shell">
+      <section class="masthead">
+        <p class="eyebrow">Google Meet AI Sidecar</p>
+        <h1>Traducción en vivo con subtítulos y voz en paralelo</h1>
+        <p class="lede">
+          Captura el audio de una pestaña de Meet, envíalo a OpenAI Realtime y escucha la traducción mientras sigues el transcript original y el traducido.
+        </p>
+        <div class="masthead-note">
+          Abre Meet en otra pestaña. Al iniciar, elige la pestaña de la reunión y activa la opción de compartir el audio de la pestaña.
+        </div>
+      </section>
+
+      <section class="board">
+        <article class="panel control-panel">
+          <div class="panel-head">
+            <h2>Sesión</h2>
+            <p>Configura idiomas, voz y salida antes de arrancar el sidecar.</p>
+          </div>
+
+          <form id="sidecarForm" class="controls">
+            <label>
+              Idioma original
+              <select id="sourceLanguage" name="sourceLanguage">
+                <option value="auto">Detección automática</option>
+                <option value="en">Inglés</option>
+                <option value="es">Español</option>
+                <option value="fr">Francés</option>
+                <option value="de">Alemán</option>
+                <option value="it">Italiano</option>
+                <option value="pt">Portugués</option>
+              </select>
+            </label>
+
+            <label>
+              Idioma traducido
+              <select id="targetLanguage" name="targetLanguage">
+                <option value="es">Español</option>
+                <option value="en">Inglés</option>
+                <option value="fr">Francés</option>
+                <option value="de">Alemán</option>
+                <option value="it">Italiano</option>
+                <option value="pt">Portugués</option>
+              </select>
+            </label>
+
+            <label>
+              Voz de salida
+              <select id="voice" name="voice">
+                <option value="sage">Sage</option>
+                <option value="alloy">Alloy</option>
+                <option value="ash">Ash</option>
+                <option value="ballad">Ballad</option>
+                <option value="coral">Coral</option>
+                <option value="echo">Echo</option>
+                <option value="shimmer">Shimmer</option>
+                <option value="verse">Verse</option>
+              </select>
+            </label>
+
+            <label class="toggle">
+              <input id="playTranslatedAudio" type="checkbox" checked>
+              Reproducir voz traducida
+            </label>
+
+            <div class="actions">
+              <button id="startButton" type="submit">Iniciar sidecar</button>
+              <button id="stopButton" type="button" class="ghost" disabled>Detener</button>
+            </div>
+          </form>
+
+          <div class="stats-grid">
+            <article class="stat-card">
+              <span class="stat-label">Estado</span>
+              <strong id="connectionState">Sin conectar</strong>
+            </article>
+            <article class="stat-card">
+              <span class="stat-label">Ruta</span>
+              <strong id="languagePair">Auto → ES</strong>
+            </article>
+            <article class="stat-card">
+              <span class="stat-label">Audio</span>
+              <strong id="captureState">No compartido</strong>
+            </article>
+            <article class="stat-card">
+              <span class="stat-label">Duración</span>
+              <strong id="sessionRuntime">00:00</strong>
+            </article>
+          </div>
+        </article>
+
+        <article class="panel transcript-panel">
+          <div class="panel-head">
+            <h2>Original</h2>
+            <p>Transcript incremental del audio que entra desde Meet.</p>
+          </div>
+          <div id="sourceLive" class="live-line empty">Esperando audio de la reunión.</div>
+          <div id="sourceHistory" class="transcript-stack"></div>
+        </article>
+
+        <article class="panel transcript-panel">
+          <div class="panel-head">
+            <h2>Traducido</h2>
+            <p>Subtítulo y voz sintetizada del intérprete en tiempo real.</p>
+          </div>
+          <div id="translatedLive" class="live-line empty">La traducción aparecerá aquí.</div>
+          <div id="translatedHistory" class="transcript-stack"></div>
+        </article>
+
+        <article class="panel guide-panel">
+          <div class="panel-head">
+            <h2>Cómo usarlo</h2>
+            <p>La secuencia recomendada para no perder audio ni permisos del navegador.</p>
+          </div>
+
+          <ol class="guide-list">
+            <li>Abre Google Meet en una pestaña distinta de esta.</li>
+            <li>Pulsa <strong>Iniciar sidecar</strong> y selecciona la pestaña de Meet.</li>
+            <li>Marca la opción de compartir el audio de la pestaña antes de confirmar.</li>
+            <li>Deja esta ventana al lado de Meet para seguir subtítulos y controlar la sesión.</li>
+          </ol>
+
+          <div id="status" class="status-card">
+            El sidecar está listo. Cuando arranques, usaremos tu gesto de clic para autorizar audio y reproducción automática.
+          </div>
+        </article>
+      </section>
+
+      <audio id="translatedAudio" autoplay playsinline></audio>
+      <script type="module" src="/meet-sidecar.js"></script>
+    </main>
+  </body>
+</html>
